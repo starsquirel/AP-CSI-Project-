@@ -10,8 +10,7 @@ Odd = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]
 weel = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 23, 34, 15, 3, 24, 36, 13, 1, 00, 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2]
 
 
-Chips = 100
-Wait = 0.05
+
 def Text(words):
     global Wait
     index = 0
@@ -22,13 +21,11 @@ def Text(words):
         print(words[index], end='', flush=True)
         index += 1
 
-       
-Text("hello this is roulet\n")
-
 def rouletteweel():
 # Chooses a random eliment in the weel
     weel_out = random.choice(weel)
     return weel_out
+Text("hello this is roulet\n")  
 def main(Chips):
     while True:
         
@@ -71,4 +68,55 @@ def main(Chips):
                         Text("you win\n")
                         Chips = Chips + Bet
                         print(f"you win! you now have:{Chips} chips\n") 
-               
+                    else: 
+                        Chips = Chips - Bet
+                        print(f"you Loose! you now have:{Chips} chips\n")
+                        
+                elif Choice2 == "5":
+                    if role in Even:
+                        Text("you win\n")
+                        Chips = Chips + Bet
+                        print(f"you win! you now have:{Chips} chips\n") 
+                    else: 
+                        Chips = Chips - Bet
+                        print(f"you Loose! you now have:{Chips} chips\n")
+                elif Choice2 == "6":
+                    if role in Odd:
+                        Text("you win\n")
+                        Chips = Chips + Bet
+                        print(f"you win! you now have:{Chips} chips\n") 
+                    else: 
+                        Chips = Chips - Bet
+                        print(f"you Loose! you now have:{Chips} chips\n")
+                else:
+                    print("sohmeit is wrong")
+
+        elif Choice1 == "2":
+           AddChips = int(input("how much do you want to add: "))
+           Chips = Chips + AddChips
+        elif Choice1 == "3":
+            break
+        else:
+            print("invalid input")
+#I have output now I need to add betting; high low, red or black, even or odd, Straight/single(any number" 0 and 0. I am not doing the other types of bets damn it is 5:00 am
+def test(wheel_out):
+    print(wheel_out)
+    if wheel_out in Black:
+        print("black")
+    if wheel_out in Red:
+        print("red")
+    if wheel_out == 0:
+        print("lucky you got this was a", wheel_out)
+    if wheel_out == 00:
+        print("wow thats crazy a", wheel_out)
+    if wheel_out in Low:
+        print("low")
+    if wheel_out in High:
+        print("high")
+    if wheel_out in Even:
+        print("even")
+    if wheel_out in Odd:
+        print("odd")
+#test(rouletteweel())
+
+main(Chips)
