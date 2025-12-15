@@ -122,10 +122,13 @@ def main(Chips, Losses, Wins):
                 Text("you are betting on green\n")
             elif Betting == "8":
                     StraightBet = input("Which number do you want to bet on (00, 0-36): ")
-                    if StraightBet in Wheel:
-                        Text(f"you are betting on number {StraightBet}\n")
+                    if StraightBet == "00":
+                        StraightBet = 00
                     else:
-                        print("Invalid input!")
+                        if StraightBet in Wheel:
+                            Text(f"you are betting on number {StraightBet}\n")
+                        else:
+                            print("Invalid input!")
                     
             else:
                 print("ERROR")
