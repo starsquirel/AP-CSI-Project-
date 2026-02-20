@@ -4,7 +4,9 @@ import json
 import os
 
 #this is the Wheel
-Wheel = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 23, 34, 15, 3, 24, 36, 13, 1, 00, 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2]
+#it is all the outputs that the wheel can do
+#37 is a placeholder for 00 because I do not want to use a string
+Wheel = [0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 23, 34, 15, 3, 24, 36, 13, 1, 37, 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35, 14, 2]
 #these are the lists to check what type the Roll is so I dont have make a lot more code
 Black = [15, 4, 2, 17, 6, 13, 11, 8, 10, 24, 33, 20, 31, 22, 29, 28, 35, 26]
 Red = [32, 19, 21, 25, 34, 27, 36, 30, 23, 5, 16, 1, 14, 9, 18, 7, 12, 3]
@@ -12,19 +14,16 @@ Low = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 High = [19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
 Even = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36]
 Odd = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35]
-Green = (0, 00)
+Green = (0, 37)
 Data = {"Chips": 0, "WINS": 0, "LOSSES": 0}
-
-Wait = 0.01
-Chips = int(0)
-Losses = int(0)
-Wins = int(0)
 
 
 #makes the text look like it is being typed out
-def Text(words):
-    global Wait
+#words is the text it outputs and wait is the speed it outputs it
+#the way it works is it has an index that will go to the amount of characters there are but every time it goes up it waits Wait amount of seconds
+def Text(words, Wait=0.01):
     index = 0
+    #len is the the length of the string so as long as i
     for i in range(len(words)):
         if words[index] != ' ':
             time.sleep(Wait)
@@ -39,28 +38,45 @@ def RouletteWheel():
     Wheel_out = random.choice(Wheel)
     return Wheel_out
 
+Chips = int(0)
+Losses = int(0)
+Wins = int(0)
+
+
 
 #this is the start up function
 #when the game starts it loads the chips from the json file
 def StartUp():
-    Text("hello this is roulett\n\n")
+    #this clears the screen then prints
+    os.system('clear')
+    Text("hello this is roulett\n\n", 0.05)
+    Chips = int(0)
+    Losses = int(0)
+    Wins = int(0)
 
+
+
+    #this checks if there is save data 
     try:
         with open('save.json', 'r') as f:
             Data = json.load(f)
             Chips = Data["Chips"]
             Losses = Data["LOSSES"]
             Wins = Data["WINS"]
+    #this is iff there is no save data so it makes a new save
     except FileNotFoundError:
         Chips = 0
         Losses = 0
         Wins = 0
         main(Chips, Losses, Wins)
+    #then this starts the main function with chips losses and win passed to it
     main(Chips, Losses, Wins)
 
-
+#this is here just so it looks nice
 def ScreenClear():
+    #input so it waits for you to press enter
     input("press enter to continue\n")
+    #this clears the screen
     os.system('clear')
 
 
@@ -70,12 +86,12 @@ def ScreenClear():
 def Shutdown():
     Text("goodbye\n")
     Text("saving\n")
-    
+
     with open('save.json', 'w') as f:
         json.dump(Data, f)
     time.sleep(1)
-    
-    
+
+
     Text("shutting down\n")
     exit()
 
@@ -86,6 +102,7 @@ def main(Chips, Losses, Wins):
     while True:
         BlackBG = '\033[100m'  #ansi color code
         RedBG = '\033[41m'
+        GreenBG = '\033[42m'
         Reset = '\033[0m'
         #saves the chips every time the loop runs
         Data["Chips"] = Chips
@@ -104,7 +121,7 @@ def main(Chips, Losses, Wins):
             #this is where the user chooses what they want to bet on
             Betting = input("\nwhat do you want to bet on: ")
             os.system('clear')
-            
+
             StraightBet = None
             if Betting == "1":
                 Text("you are betting on black\n")
@@ -123,13 +140,13 @@ def main(Chips, Losses, Wins):
             elif Betting == "8":
                     StraightBet = input("Which number do you want to bet on (00, 0-36): ")
                     if StraightBet == "00":
-                        StraightBet = 00
+                        StraightBet = 37
                     else:
                         if StraightBet in Wheel:
                             Text(f"you are betting on number {StraightBet}\n")
                         else:
                             print("Invalid input!")
-                    
+
             else:
                 print("ERROR")
             #this is where the user bets their chips
@@ -145,9 +162,15 @@ def main(Chips, Losses, Wins):
                     print(BlackBG + f"\n{Roll} black" + Reset + "\n")
                 if Roll in Red:
                     print(RedBG + f"\n{Roll} red" + Reset + "\n")
+                if Roll in Green:
+                    if Roll == 37: 
+                        print(GreenBG + f"\n00" + Reset + "\n")
+                    else:
+                       print(GreenBG + f"\n{Roll}" + Reset + "\n")
 
                 #this checks if the user won or lost
                 #and does math to + or - chips
+                #this could be a lot better
                 if Betting == "1":
                     if Roll in Black:
                         Text("you win\n")
@@ -155,9 +178,10 @@ def main(Chips, Losses, Wins):
                         Wins = Wins + 1
                         print(f"you now have: {Chips} chips\n")
                     else:
-                        Chips = Chips - Bet
-                        Losses = Losses + 1
-                        print(f"you Loose! you now have: {Chips} chips\n")
+                        Lose(Chips, Bet, Losses)
+                        #Chips = Chips - Bet
+                        #Losses = Losses + 1
+                        #print(f"you Loose! you now have: {Chips} chips\n")
                 elif Betting == "2":
                     if Roll in Red:
                         Chips = Chips + Bet
@@ -226,19 +250,21 @@ def main(Chips, Losses, Wins):
 
                 else:
                     print("ERROR")
-
-                ScreenClear()
+                    ScreenClear()
             else:
                 print("you dont have enough chips")
 
+                ScreenClear()
+
         #This just adds chips
         elif Choice1 == "2":
+            print(f"you have: {Chips} chips")
             AddChips = int(input("\nhow much do you want to add: "))
             Chips = Chips + AddChips
             ScreenClear()
-
+#this is the one that prints the amount you win and loose and also the amount of chips you have
         elif Choice1 == "3":
-            print(f"you have {Wins} wins and {Losses} losses\n\n")
+            print(f"you have {Wins} wins, {Losses} losses and {Chips} Chips\n\n")
             ScreenClear()
 
         #as the function says it shuts done
@@ -248,6 +274,11 @@ def main(Chips, Losses, Wins):
         else:
             print("invalid input")
             ScreenClear()
+def Lose(Chips, Bet, Losses):
+    Chips = Chips - Bet
+    Losses = Losses + 1
+    print(f"you Loose! you now have: {Chips} chips\n")
 
 
 StartUp()
+
